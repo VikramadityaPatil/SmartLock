@@ -24,6 +24,8 @@ public class LockActivity extends AppCompatActivity {
     private Set<BluetoothDevice> pairedDevices;
     private ArrayList<BluetoothDevice> discoveredDevices;
     private ArrayList<BluetoothDevice> devices;
+    private DeviceAdapter deviceAdapter;
+    private DeviceAdapter deviceAdapter2;
     private ListView listView;
     private ListView listView2;
     private IntentFilter filter;
@@ -39,8 +41,8 @@ public class LockActivity extends AppCompatActivity {
         pairedDevices = bluetoothAdapter.getBondedDevices();
         discoveredDevices = new ArrayList<>();
         devices = new ArrayList<>();
-        DeviceAdapter deviceAdapter = new DeviceAdapter(this,devices);
-        DeviceAdapter deviceAdapter2 = new DeviceAdapter(this,discoveredDevices);
+        deviceAdapter = new DeviceAdapter(this,devices);
+        deviceAdapter2 = new DeviceAdapter(this,discoveredDevices);
         listView.setAdapter(deviceAdapter);
         filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
@@ -71,6 +73,7 @@ public class LockActivity extends AppCompatActivity {
             BluetoothDevice mdevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             if(BluetoothDevice.ACTION_FOUND.equals(action)){
                 discoveredDevices.add(mdevice);
+                deviceAdapter2.notifyDataSetChanged();
                 Toast.makeText(getApplicationContext(),mdevice.getName(),Toast.LENGTH_SHORT).show();
             }
             if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
